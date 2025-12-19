@@ -25,17 +25,7 @@ class SoilService {
         drainage: 'Good',
         waterHoldingCapacity: 'Medium'
       },
-      'USA-California-Fresno': {
-        type: 'Alluvial Soil',
-        ph: 7.8,
-        nitrogen: 'High',
-        phosphorus: 'High',
-        potassium: 'Medium',
-        organicMatter: 2.5,
-        texture: 'Loam',
-        drainage: 'Excellent',
-        waterHoldingCapacity: 'Medium'
-      }
+
     };
 
     this.soilTypes = {

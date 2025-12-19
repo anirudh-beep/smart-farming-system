@@ -49,12 +49,6 @@ class LocationService {
         'Odisha': {
           'Puri': ['Satyabadi', 'Nimapara', 'Pipili', 'Gop', 'Kakatpur']
         }
-      },
-      'USA': {
-        'California': {
-          'Fresno': ['Clovis', 'Sanger', 'Selma', 'Fowler', 'Kerman'],
-          'Kern': ['Bakersfield', 'Delano', 'Wasco', 'Shafter', 'Arvin']
-        }
       }
     };
   }
@@ -177,12 +171,7 @@ class LocationService {
         
         // Odisha
         { lat: 20.2961, lng: 85.8245, country: 'India', state: 'Odisha', district: 'Bhubaneswar', village: 'Bhubaneswar City' },
-        { lat: 19.8135, lng: 85.8312, country: 'India', state: 'Odisha', district: 'Puri', village: 'Puri City' },
-        
-        // USA - Major agricultural regions
-        { lat: 36.7378, lng: -119.7871, country: 'USA', state: 'California', district: 'Fresno', village: 'Fresno City' },
-        { lat: 35.3733, lng: -119.0187, country: 'USA', state: 'California', district: 'Kern', village: 'Bakersfield City' },
-        { lat: 39.7391, lng: -104.9847, country: 'USA', state: 'Colorado', district: 'Denver', village: 'Denver City' }
+        { lat: 19.8135, lng: 85.8312, country: 'India', state: 'Odisha', district: 'Puri', village: 'Puri City' }
       ];
 
       // Find closest location with improved distance calculation
