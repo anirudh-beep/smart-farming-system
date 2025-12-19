@@ -223,13 +223,14 @@ class LocationService {
     }
 
     const availableVillages = this.regions[country][state][district];
-    if (village && !availableVillages.includes(village)) {
-      throw new Error('Village not found in selected district');
-    }
+    
+    // Allow custom village names - no validation required
+    // If no village provided, use first available village as default
+    const selectedVillage = village || availableVillages[0];
 
     return {
       success: true,
-      location: { country, state, district, village: village || availableVillages[0] },
+      location: { country, state, district, village: selectedVillage },
       method: 'MANUAL'
     };
   }

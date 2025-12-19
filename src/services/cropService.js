@@ -4,7 +4,7 @@ const datasetService = require('./datasetService');
 class CropService {
   constructor() {
     this.geminiApiKey = process.env.GEMINI_API_KEY;
-    this.geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+    this.geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
     
     this.cropDatabase = {
       'Rice': {
@@ -453,6 +453,349 @@ Keep the response practical and actionable for farmers.`;
       crops: this.cropDatabase,
       totalCrops: Object.keys(this.cropDatabase).length
     };
+  }
+
+  async getChatbotResponse(message, context = {}) {
+    try {
+      // Create context-aware prompt for the chatbot
+      let contextInfo = '';
+      
+      if (context.location) {
+        contextInfo += `User's location: ${context.location.district}, ${context.location.state}, India. `;
+      }
+      
+      if (context.soilData) {
+        contextInfo += `Soil type: ${context.soilData.type}, pH: ${context.soilData.ph}, Nitrogen: ${context.soilData.nitrogen}, Phosphorus: ${context.soilData.phosphorus}, Potassium: ${context.soilData.potassium}. `;
+      }
+      
+      if (context.weatherData) {
+        contextInfo += `Current weather: ${context.weatherData.current?.temperature}°C, ${context.weatherData.current?.condition}, Rainfall: ${context.weatherData.current?.rainfall}mm. `;
+      }
+      
+      if (context.cropData && context.cropData.recommendedCrops) {
+        const topCrops = context.cropData.recommendedCrops.slice(0, 3).map(crop => crop.name).join(', ');
+        contextInfo += `Recommended crops: ${topCrops}. `;
+      }
+
+      const prompt = `You are FarmX AI Assistant, a helpful farming expert for Indian agriculture. 
+      
+Context: ${contextInfo}
+
+User question: ${message}
+
+Please provide a helpful, practical answer about farming, crops, soil, weather, or agricultural practices. Keep responses concise (2-3 sentences max), friendly, and focused on actionable advice for Indian farmers. If the question is not related to farming, politely redirect to agricultural topics.
+
+Use simple language and include practical tips when relevant. If you mention specific recommendations, relate them to the user's context when available.`;
+
+      // Try Gemini API with correct endpoint and model name
+      if (this.geminiApiKey) {
+        try {
+          console.log('Attempting Gemini API call...');
+          
+          // Use the correct Gemini API endpoint with proper model name
+          const response = await axios.post(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${this.geminiApiKey}`,
+            {
+              contents: [{
+                parts: [{
+                  text: prompt
+                }]
+              }]
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              timeout: 15000
+            }
+          );
+
+          console.log('Gemini API response received:', response.status);
+
+          if (response.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+            let aiResponse = response.data.candidates[0].content.parts[0].text.trim();
+            
+            // Add farming tips for common questions
+            if (message.toLowerCase().includes('soil') && message.toLowerCase().includes('improve')) {
+              aiResponse += ' 💡 Add compost or cow dung to improve soil fertility naturally.';
+            } else if (message.toLowerCase().includes('water') || message.toLowerCase().includes('irrigation')) {
+              aiResponse += ' 💡 Water early morning or evening to reduce evaporation.';
+            } else if (message.toLowerCase().includes('pest') || message.toLowerCase().includes('disease')) {
+              aiResponse += ' 💡 Regular field inspection helps catch problems early.';
+            }
+            
+            console.log('Gemini AI response generated successfully');
+            return {
+              success: true,
+              response: aiResponse,
+              source: 'Gemini AI',
+              timestamp: new Date().toISOString()
+            };
+          }
+        } catch (apiError) {
+          console.error('Gemini API error:', apiError.response?.status, apiError.response?.statusText);
+          console.error('Gemini API error details:', apiError.response?.data);
+          console.log('Falling back to intelligent responses...');
+        }
+      }
+      
+      // Fallback responses for common farming questions
+      return this.getFallbackChatResponse(message, context);
+      
+    } catch (error) {
+      console.error('Chatbot error:', error);
+      return this.getFallbackChatResponse(message, context);
+    }
+  }
+
+  getFallbackChatResponse(message, context) {
+    const lowerMessage = message.toLowerCase();
+    
+    // Direct questions about best soil for specific crops
+    if (lowerMessage.includes('which soil') && lowerMessage.includes('best')) {
+      if (lowerMessage.includes('wheat')) {
+        return {
+          success: true,
+          response: 'The best soils for wheat are Alluvial soil and Black cotton soil. Alluvial soil is ideal because it\'s fertile, well-drained, and has good water retention. Black cotton soil also works excellently as it retains moisture and has high fertility. 💡 Wheat grows best in pH 6.0-7.5.',
+          source: 'FarmX Assistant',
+          timestamp: new Date().toISOString()
+        };
+      } else if (lowerMessage.includes('rice')) {
+        return {
+          success: true,
+          response: 'The best soils for rice are Alluvial soil and Black cotton soil. Rice needs soil that can retain water well. Alluvial soil in river deltas is perfect for rice cultivation. Black cotton soil also works well due to its water retention capacity. 💡 Rice grows best in pH 5.5-7.0.',
+          source: 'FarmX Assistant',
+          timestamp: new Date().toISOString()
+        };
+      } else if (lowerMessage.includes('cotton')) {
+        return {
+          success: true,
+          response: 'Black cotton soil is the best for cotton cultivation! It\'s specifically named after cotton because of its excellent suitability. This soil has good water retention, high fertility, and the right texture for cotton roots. 💡 Cotton grows best in pH 5.8-8.0.',
+          source: 'FarmX Assistant',
+          timestamp: new Date().toISOString()
+        };
+      } else if (lowerMessage.includes('sugarcane')) {
+        return {
+          success: true,
+          response: 'Alluvial soil and Black cotton soil are best for sugarcane. These soils have good fertility, water retention, and drainage. Sugarcane needs rich, deep soil with good organic matter content. 💡 Sugarcane grows best in pH 6.0-7.5.',
+          source: 'FarmX Assistant',
+          timestamp: new Date().toISOString()
+        };
+      }
+    }
+    
+    // Specific soil-crop compatibility questions
+    if (lowerMessage.includes('red soil') || lowerMessage.includes('red laterite')) {
+      if (lowerMessage.includes('wheat')) {
+        return {
+          success: true,
+          response: 'Red soil can grow wheat, but it\'s not the best choice. Red soil is better for groundnut, millets, and cashew. For wheat, black cotton soil or alluvial soil work better. 💡 If you must grow wheat in red soil, add organic matter and ensure proper irrigation.',
+          source: 'FarmX Assistant',
+          timestamp: new Date().toISOString()
+        };
+      } else if (lowerMessage.includes('crop') || lowerMessage.includes('good')) {
+        return {
+          success: true,
+          response: 'Red laterite soil is excellent for groundnut, millets, cashew, coconut, and spices. It\'s well-drained but needs organic matter for better fertility. 💡 Crops that tolerate slightly acidic conditions do well in red soil.',
+          source: 'FarmX Assistant',
+          timestamp: new Date().toISOString()
+        };
+      }
+    }
+    
+    if (lowerMessage.includes('black soil') || lowerMessage.includes('cotton soil')) {
+      if (lowerMessage.includes('wheat')) {
+        return {
+          success: true,
+          response: 'Black cotton soil is excellent for wheat! It retains moisture well and has good fertility. Plant wheat in October-November for best results. 💡 Black soil is also great for cotton, sugarcane, and soybean.',
+          source: 'FarmX Assistant',
+          timestamp: new Date().toISOString()
+        };
+      }
+    }
+    
+    if (lowerMessage.includes('alluvial soil')) {
+      if (lowerMessage.includes('wheat')) {
+        return {
+          success: true,
+          response: 'Alluvial soil is perfect for wheat cultivation! It\'s fertile, well-drained, and ideal for cereal crops. You can expect good yields with proper irrigation. 💡 Alluvial soil is also excellent for rice, maize, and sugarcane.',
+          source: 'FarmX Assistant',
+          timestamp: new Date().toISOString()
+        };
+      }
+    }
+    
+    // Enhanced context-aware responses
+    if (lowerMessage.includes('crop') && (lowerMessage.includes('best') || lowerMessage.includes('recommend'))) {
+      if (context.soilData?.type) {
+        const soilSpecificCrops = this.getSoilSpecificCrops(context.soilData.type);
+        return {
+          success: true,
+          response: `For ${context.soilData.type}, I recommend ${soilSpecificCrops}. ${context.location ? `In ${context.location.district}, ${context.location.state}, ` : ''}consider local climate and market prices. 💡 Complete weather analysis for more precise recommendations.`,
+          source: 'FarmX Assistant',
+          timestamp: new Date().toISOString()
+        };
+      }
+      return {
+        success: true,
+        response: 'The best crops depend on your soil type, climate, and local market. Complete your soil analysis first to get personalized recommendations. 💡 Rice, wheat, and cotton are popular choices in India.',
+        source: 'FarmX Assistant',
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    if (lowerMessage.includes('soil') && (lowerMessage.includes('improve') || lowerMessage.includes('fertility'))) {
+      let response = 'To improve soil fertility, add organic matter like compost or cow dung, rotate crops, and use appropriate fertilizers based on soil testing.';
+      if (context.soilData) {
+        if (context.soilData.ph < 6.0) {
+          response += ' Your soil is acidic - add lime to balance pH.';
+        } else if (context.soilData.ph > 8.0) {
+          response += ' Your soil is alkaline - add organic matter to balance pH.';
+        }
+      }
+      response += ' 💡 Test your soil annually to track improvements.';
+      return {
+        success: true,
+        response: response,
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    if (lowerMessage.includes('water') || lowerMessage.includes('irrigation')) {
+      let response = 'Water crops early morning or evening to reduce evaporation. Use drip irrigation for water efficiency.';
+      if (context.weatherData?.current?.rainfall < 20) {
+        response += ' With low rainfall expected, plan for regular irrigation.';
+      } else if (context.weatherData?.current?.rainfall > 100) {
+        response += ' With heavy rainfall expected, ensure proper drainage.';
+      }
+      response += ' 💡 Mulching helps retain soil moisture.';
+      return {
+        success: true,
+        response: response,
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    if (lowerMessage.includes('fertilizer')) {
+      if (context.soilData) {
+        const lowNutrients = [];
+        if (context.soilData.nitrogen === 'Low') lowNutrients.push('nitrogen (use urea or compost)');
+        if (context.soilData.phosphorus === 'Low') lowNutrients.push('phosphorus (use DAP or bone meal)');
+        if (context.soilData.potassium === 'Low') lowNutrients.push('potassium (use MOP or wood ash)');
+        
+        if (lowNutrients.length > 0) {
+          return {
+            success: true,
+            response: `Based on your soil analysis, focus on ${lowNutrients.join(', ')}. Apply fertilizers in split doses for better efficiency. 💡 Organic fertilizers like compost improve long-term soil health.`,
+            timestamp: new Date().toISOString()
+          };
+        } else {
+          return {
+            success: true,
+            response: `Your soil nutrient levels look balanced (N:${context.soilData.nitrogen}, P:${context.soilData.phosphorus}, K:${context.soilData.potassium}). Use maintenance doses of NPK fertilizers. 💡 Continue with organic matter to maintain soil health.`,
+            timestamp: new Date().toISOString()
+          };
+        }
+      }
+      return {
+        success: true,
+        response: 'Use fertilizers based on soil test results. NPK fertilizers provide essential nutrients. Apply in split doses during crop growth stages. 💡 Combine with organic fertilizers for best results.',
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    if (lowerMessage.includes('weather') || lowerMessage.includes('rain')) {
+      let response = 'Monitor weather forecasts regularly for farming decisions.';
+      if (context.weatherData?.current) {
+        response += ` Current conditions: ${context.weatherData.current.temperature}°C, ${context.weatherData.current.condition}.`;
+        if (context.weatherData.current.rainfall > 50) {
+          response += ' Heavy rain expected - ensure proper drainage.';
+        } else if (context.weatherData.current.rainfall < 10) {
+          response += ' Low rainfall - plan irrigation accordingly.';
+        }
+      }
+      response += ' 💡 Use weather data to time planting and harvesting.';
+      return {
+        success: true,
+        response: response,
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    if (lowerMessage.includes('pest') || lowerMessage.includes('disease')) {
+      return {
+        success: true,
+        response: 'Regular field inspection helps detect pests and diseases early. Use integrated pest management combining biological, cultural, and chemical methods. 💡 Healthy soil and proper spacing reduce disease risk.',
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    if (lowerMessage.includes('plant') || lowerMessage.includes('sow') || lowerMessage.includes('when')) {
+      let response = 'Plant timing depends on crop type and local climate. Kharif crops are planted during monsoon (June-July), Rabi crops in winter (October-December).';
+      if (context.location) {
+        response += ` For ${context.location.district}, ${context.location.state}, consult local agricultural calendar.`;
+      }
+      response += ' 💡 Check current weather conditions before planting.';
+      return {
+        success: true,
+        response: response,
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    if (lowerMessage.includes('price') || lowerMessage.includes('market')) {
+      return {
+        success: true,
+        response: 'Market prices vary by location and season. Check local mandis (markets) for current rates. Consider crops with good demand in your area. 💡 Value-added crops often fetch better prices.',
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    if (lowerMessage.includes('organic') || lowerMessage.includes('natural')) {
+      return {
+        success: true,
+        response: 'Organic farming uses natural methods like compost, crop rotation, and biological pest control. Start gradually by reducing chemical inputs and building soil health. 💡 Organic certification can increase market value.',
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    // Greeting responses
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+      return {
+        success: true,
+        response: `Hello! I'm your FarmX AI Assistant. ${context.location ? `I see you're from ${context.location.district}, ${context.location.state}. ` : ''}Ask me anything about farming, crops, soil, or weather!`,
+        source: 'FarmX Assistant',
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    if (lowerMessage.includes('who are you') || lowerMessage.includes('what are you')) {
+      return {
+        success: true,
+        response: 'I\'m FarmX AI Assistant, your personal farming expert! I help with crop recommendations, soil analysis, weather insights, and agricultural best practices for Indian farmers. How can I help you today?',
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    // Default response
+    return {
+      success: true,
+      response: 'I\'m here to help with farming questions! Ask me about crops, soil, weather, fertilizers, or any agricultural practices. You can also complete your location and soil analysis for personalized recommendations.',
+      source: 'FarmX Assistant',
+      timestamp: new Date().toISOString()
+    };
+  }
+  
+  getSoilSpecificCrops(soilType) {
+    const soilCropMap = {
+      'Black Cotton Soil': 'cotton, sugarcane, wheat, and soybean',
+      'Red Laterite Soil': 'groundnut, millets, cashew, and coconut',
+      'Alluvial Soil': 'rice, wheat, maize, and sugarcane',
+      'Sandy Soil': 'millets, groundnut, and drought-resistant crops',
+      'Peaty Soil': 'rice and other water-loving crops'
+    };
+    
+    return soilCropMap[soilType] || 'crops suitable for your soil type';
   }
 }
 

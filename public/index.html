@@ -45,7 +45,7 @@
                 <p>Smart farming platform for maximizing crop yield and sustainable agriculture</p>
                 <button class="cta-button" onclick="scrollToSection('location')">
                     <i class="fas fa-map-marker-alt"></i>
-                    Get Started
+                    <span>Get Started</span>
                 </button>
             </div>
             <div class="hero-features">
@@ -82,7 +82,7 @@
                         <h3><i class="fas fa-satellite"></i> GPS Detection</h3>
                         <button id="gps-detect" class="btn btn-primary">
                             <i class="fas fa-crosshairs"></i>
-                            Detect My Location
+                            <span>Detect My Location</span>
                         </button>
                         <div id="gps-status" class="status-message"></div>
                         <button id="test-location" class="btn btn-outline" style="margin-top: 1rem;">
@@ -104,12 +104,10 @@
                             <select id="district" required>
                                 <option value="">Select District</option>
                             </select>
-                            <select id="village">
-                                <option value="">Select Village (Optional)</option>
-                            </select>
+                            <input type="text" id="village" name="village" placeholder="Enter Village Name (Optional)">
                             <button type="submit" class="btn btn-secondary">
                                 <i class="fas fa-check"></i>
-                                Set Location
+                                <span>Set Location</span>
                             </button>
                         </form>
                     </div>
@@ -120,7 +118,7 @@
                     <div id="location-details"></div>
                     <button class="btn btn-success" onclick="scrollToSection('soil')">
                         <i class="fas fa-arrow-right"></i>
-                        Proceed to Soil Analysis
+                        <span>Proceed to Soil Analysis</span>
                     </button>
                 </div>
             </div>
@@ -143,7 +141,7 @@
                             <p class="detection-description">Analyzes soil based on your location data</p>
                             <button id="analyze-soil" class="btn btn-primary detection-btn" disabled>
                                 <i class="fas fa-flask"></i>
-                                Analyze Soil
+                                <span>Analyze Soil</span>
                             </button>
                             <div class="detection-features">
                                 <div class="feature-item">
@@ -216,7 +214,7 @@
                             </div>
                             <button type="submit" class="btn btn-secondary update-btn">
                                 <i class="fas fa-save"></i>
-                                Update Soil Data
+                                <span>Update Soil Data</span>
                             </button>
                         </form>
                     </div>
@@ -227,7 +225,7 @@
                     <div id="soil-details"></div>
                     <button class="btn btn-success" onclick="scrollToSection('weather')">
                         <i class="fas fa-arrow-right"></i>
-                        Check Weather Conditions
+                        <span>Check Weather Conditions</span>
                     </button>
                 </div>
             </div>
@@ -241,11 +239,11 @@
                 <div class="weather-controls">
                     <button id="get-weather" class="btn btn-primary" disabled>
                         <i class="fas fa-sync"></i>
-                        Get Weather Forecast
+                        <span>Get Weather Forecast</span>
                     </button>
                     <button id="seasonal-analysis" class="btn btn-secondary" disabled>
                         <i class="fas fa-calendar-alt"></i>
-                        Seasonal Analysis
+                        <span>Seasonal Analysis</span>
                     </button>
                 </div>
                 
@@ -266,7 +264,7 @@
                     </div>
                     <button class="btn btn-success" onclick="scrollToSection('crops')">
                         <i class="fas fa-arrow-right"></i>
-                        Get Crop Recommendations
+                        <span>Get Crop Recommendations</span>
                     </button>
                 </div>
 
@@ -292,6 +290,39 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Smart Farming Calendar Widget -->
+                <div class="farming-calendar-widget">
+                    <h3><i class="fas fa-calendar-week"></i> Smart Farming Calendar</h3>
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <button class="calendar-nav" onclick="changeCalendarMonth(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h4 id="calendar-month-year"></h4>
+                            <button class="calendar-nav" onclick="changeCalendarMonth(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="calendar-grid" id="farming-calendar-grid">
+                            <!-- Calendar will be generated by JavaScript -->
+                        </div>
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <span class="legend-color planting"></span>
+                                <span>Planting Season</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color harvesting"></span>
+                                <span>Harvesting Season</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color maintenance"></span>
+                                <span>Crop Maintenance</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -303,14 +334,14 @@
                 <div class="crop-controls">
                     <button id="get-recommendations" class="btn btn-primary" disabled>
                         <i class="fas fa-magic"></i>
-                        Get AI Recommendations
+                        <span>Get AI Recommendations</span>
                     </button>
                     <div class="crop-options">
                         <label>Budget for fertilizers (₹):</label>
                         <input type="number" id="fertilizer-budget" placeholder="10000" min="0">
                         <button id="fertilizer-recommendations" class="btn btn-secondary" disabled>
                             <i class="fas fa-coins"></i>
-                            Fertilizer Options
+                            <span>Fertilizer Options</span>
                         </button>
                     </div>
                 </div>
@@ -347,13 +378,45 @@
                         </div>
                         <button type="submit" class="btn btn-outline">
                             <i class="fas fa-plus"></i>
-                            Add Custom Crop
+                            <span>Add Custom Crop</span>
                         </button>
                     </form>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- AI Chatbot -->
+    <div id="ai-chatbot" class="chatbot-container">
+        <div class="chatbot-header" onclick="toggleChatbot()">
+            <i class="fas fa-robot"></i>
+            <span>FarmX AI Assistant</span>
+            <i class="fas fa-chevron-up chatbot-toggle"></i>
+        </div>
+        <div class="chatbot-body">
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="bot-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Hello! I'm your FarmX AI Assistant. Ask me anything about farming, crops, soil, weather, or agricultural practices!</p>
+                        <div class="quick-questions">
+                            <button class="quick-btn" onclick="askQuickQuestion('What crops are best for my soil?')">Best crops for my soil?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('How to improve soil fertility?')">Improve soil fertility?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('When should I plant crops?')">When to plant?</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbot-input-field" placeholder="Ask me about farming..." onkeypress="handleChatbotEnter(event)">
+                <button onclick="sendChatbotMessage()" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="container">

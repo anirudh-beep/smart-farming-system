@@ -60,4 +60,41 @@ router.post('/ai-insights', async (req, res) => {
   }
 });
 
+// AI Chatbot endpoint
+router.post('/ai-chat', async (req, res) => {
+  try {
+    const { message, context } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+    
+    console.log('Chatbot request:', { message, context: context ? 'present' : 'none' });
+    const result = await cropService.getChatbotResponse(message, context);
+    console.log('Chatbot response:', result);
+    res.json(result);
+  } catch (error) {
+    console.error('Chatbot route error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Test Gemini API endpoint
+router.get('/test-gemini', async (req, res) => {
+  try {
+    const testResult = await cropService.getChatbotResponse('Hello, can you help me with farming?', {});
+    res.json({ 
+      success: true, 
+      message: 'Gemini API test completed',
+      result: testResult 
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message,
+      message: 'Gemini API test failed'
+    });
+  }
+});
+
 module.exports = router;
