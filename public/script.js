@@ -628,13 +628,13 @@ function showWeatherResult(result) {
     currentWeatherDetails.innerHTML = `
         <div class="current-weather-info">
             <div class="weather-main">
-                <div class="temperature">${result.current.temperature}°C</div>
+                <div class="temperature">${Math.round(result.current.temperature)}°C</div>
                 <div class="condition">${result.current.condition}</div>
             </div>
             <div class="weather-details">
                 <p><i class="fas fa-tint"></i> Humidity: ${result.current.humidity}%</p>
-                <p><i class="fas fa-cloud-rain"></i> Rainfall: ${result.current.rainfall}mm</p>
-                <p><i class="fas fa-wind"></i> Wind: ${result.current.windSpeed} km/h</p>
+                <p><i class="fas fa-cloud-rain"></i> Rainfall: ${result.current.rainfall.toFixed(1)}mm</p>
+                <p><i class="fas fa-wind"></i> Wind: ${Math.round(result.current.windSpeed)} km/h</p>
                 <p><i class="fas fa-sun"></i> UV Index: ${result.current.uvIndex}</p>
             </div>
         </div>
@@ -647,9 +647,9 @@ function showWeatherResult(result) {
                 <div class="weather-day-date">${new Date(day.date).toLocaleDateString()}</div>
                 <div class="weather-day-condition">${day.condition}</div>
             </div>
-            <div class="weather-day-temp">${day.minTemp}° / ${day.maxTemp}°</div>
+            <div class="weather-day-temp">${Math.round(day.minTemp)}° / ${Math.round(day.maxTemp)}°</div>
             <div class="weather-day-rain">
-                <i class="fas fa-cloud-rain"></i> ${day.rainfall}mm (${day.chanceOfRain}%)
+                <i class="fas fa-cloud-rain"></i> ${day.rainfall.toFixed(1)}mm (${day.chanceOfRain}%)
             </div>
         </div>
     `).join('');
