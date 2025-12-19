@@ -72,13 +72,25 @@ function setupNavigation() {
         });
     });
     
+    // Hero feature cards navigation
+    document.querySelectorAll('.feature-card').forEach((card, index) => {
+        card.addEventListener('click', function() {
+            const sections = ['location', 'soil', 'weather', 'crops'];
+            if (sections[index]) {
+                scrollToSection(sections[index]);
+            }
+        });
+    });
+    
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     
-    hamburger.addEventListener('click', function() {
-        navMenu.classList.toggle('active');
-    });
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+        });
+    }
 }
 
 function scrollToSection(sectionId) {
@@ -403,20 +415,30 @@ async function updateSoilData(e) {
     const formData = new FormData(e.target);
     const userSoilData = {};
     
-    // Collect non-empty form values
-    ['soil-type', 'soil-ph', 'nitrogen', 'phosphorus', 'potassium'].forEach(field => {
-        const value = formData.get(field) || document.getElementById(field.replace('-', '_') || field).value;
-        if (value) {
-            const key = field.replace('soil-', '').replace('-', '_');
-            if (key === 'ph') {
-                userSoilData.ph = parseFloat(value);
-            } else if (key === 'type') {
-                userSoilData.type = value;
-            } else {
-                userSoilData[key] = value;
-            }
-        }
-    });
+    // Collect non-empty form values with proper field mapping
+    const soilTypeValue = document.getElementById('soil-type').value;
+    const soilPhValue = document.getElementById('soil-ph').value;
+    const nitrogenValue = document.getElementById('nitrogen').value;
+    const phosphorusValue = document.getElementById('phosphorus').value;
+    const potassiumValue = document.getElementById('potassium').value;
+    
+    if (soilTypeValue && soilTypeValue !== '') {
+        userSoilData.type = soilTypeValue;
+    }
+    if (soilPhValue && soilPhValue !== '') {
+        userSoilData.ph = parseFloat(soilPhValue);
+    }
+    if (nitrogenValue && nitrogenValue !== '') {
+        userSoilData.nitrogen = nitrogenValue;
+    }
+    if (phosphorusValue && phosphorusValue !== '') {
+        userSoilData.phosphorus = phosphorusValue;
+    }
+    if (potassiumValue && potassiumValue !== '') {
+        userSoilData.potassium = potassiumValue;
+    }
+    
+    console.log('Manual soil data to send:', userSoilData);
     
     try {
         showLoading(true);

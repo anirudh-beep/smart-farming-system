@@ -1,7 +1,7 @@
 {
-  "name": "smart-farming-system",
+  "name": "farmx",
   "version": "1.0.0",
-  "description": "Location-based data and soil analysis for maximizing crop yield and sustainable farming",
+  "description": "FarmX - Smart farming platform for maximizing crop yield and sustainable agriculture",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
@@ -26,7 +26,7 @@
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
   },
-  "keywords": ["farming", "agriculture", "soil-analysis", "crop-recommendation", "weather"],
-  "author": "Smart Farming Team",
+  "keywords": ["farmx", "farming", "agriculture", "soil-analysis", "crop-recommendation", "weather"],
+  "author": "FarmX Team",
   "license": "MIT"
 }

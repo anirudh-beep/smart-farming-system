@@ -204,11 +204,13 @@ body {
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: var(--transition);
+    cursor: pointer;
 }
 
 .feature-card:hover {
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .feature-card i {
@@ -968,6 +970,32 @@ select:hover, input:hover {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
     color: rgba(255, 255, 255, 0.6);
+}
+
+/* Weather and Crop Controls */
+.weather-controls,
+.crop-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+    align-items: center;
+}
+
+.crop-options {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.crop-options label {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.crop-options input {
+    width: 200px;
 }
 
 /* Utility Classes */

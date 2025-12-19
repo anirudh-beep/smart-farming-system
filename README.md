@@ -1,4 +1,4 @@
-# Smart Farming System
+# FarmX - Smart Farming Platform
 
 A comprehensive web application for location-based data and soil analysis to maximize crop yield and promote sustainable farming practices.
 
@@ -54,7 +54,7 @@ A comprehensive web application for location-based data and soil analysis to max
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd smart-farming-system
+   cd farmx
    ```
 
 2. **Install dependencies**
@@ -179,4 +179,4 @@ For support and questions:
 
 ---
 
-**Smart Farming System** - Empowering farmers with technology for sustainable agriculture 🌱
+**FarmX** - Empowering farmers with smart technology for sustainable agriculture 🌱
