@@ -374,9 +374,9 @@
                 <div class="footer-section">
                     <h4>Support</h4>
                     <ul>
-                        <li>Help Center</li>
-                        <li>Contact Us</li>
-                        <li>Documentation</li>
+                        <li><a href="#help-center" onclick="showHelpCenter()">Help Center</a></li>
+                        <li><a href="#contact-us" onclick="showContactUs()">Contact Us</a></li>
+                        <li><a href="#documentation" onclick="showDocumentation()">Documentation</a></li>
                     </ul>
                 </div>
             </div>
@@ -385,6 +385,284 @@
             </div>
         </div>
     </footer>
+
+    <!-- Help Center Modal -->
+    <div id="help-center-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-question-circle"></i> Help Center</h2>
+                <span class="close" onclick="closeModal('help-center-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="help-sections">
+                    <div class="help-section">
+                        <h3><i class="fas fa-rocket"></i> Getting Started</h3>
+                        <div class="help-content">
+                            <h4>How to use FarmX:</h4>
+                            <ol>
+                                <li><strong>Set Your Location:</strong> Use GPS detection or manually select your location from the dropdown menus</li>
+                                <li><strong>Analyze Your Soil:</strong> Get automatic soil analysis based on your location or input manual soil data</li>
+                                <li><strong>Check Weather:</strong> View current weather and 7-day forecast with farming insights</li>
+                                <li><strong>Get Crop Recommendations:</strong> Receive AI-powered crop suggestions based on your soil and weather data</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h3><i class="fas fa-map-marker-alt"></i> Location Detection</h3>
+                        <div class="help-content">
+                            <h4>GPS Detection:</h4>
+                            <p>Click "Detect My Location" to automatically find your coordinates. Make sure to allow location access when prompted.</p>
+                            
+                            <h4>Manual Selection:</h4>
+                            <p>If GPS fails, select your location manually:</p>
+                            <ul>
+                                <li>Choose your country (India)</li>
+                                <li>Select your state</li>
+                                <li>Pick your district</li>
+                                <li>Optionally select your village</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h3><i class="fas fa-microscope"></i> Soil Analysis</h3>
+                        <div class="help-content">
+                            <h4>Auto-Detection:</h4>
+                            <p>FarmX automatically analyzes soil based on your location using regional soil data.</p>
+                            
+                            <h4>Manual Input:</h4>
+                            <p>You can override auto-detected values by entering:</p>
+                            <ul>
+                                <li>Soil type (Black Cotton, Red Laterite, Alluvial, etc.)</li>
+                                <li>pH level (4.0 - 10.0)</li>
+                                <li>Nutrient levels (Nitrogen, Phosphorus, Potassium)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h3><i class="fas fa-cloud-sun"></i> Weather Features</h3>
+                        <div class="help-content">
+                            <h4>Weather Forecast:</h4>
+                            <ul>
+                                <li>Current weather conditions</li>
+                                <li>7-day detailed forecast</li>
+                                <li>Farming-specific insights and recommendations</li>
+                            </ul>
+                            
+                            <h4>Seasonal Analysis:</h4>
+                            <ul>
+                                <li>Best planting times for different crops</li>
+                                <li>Risk assessment (drought, flood, temperature, disease)</li>
+                                <li>Agricultural calendar with seasonal guidance</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h3><i class="fas fa-leaf"></i> Crop Recommendations</h3>
+                        <div class="help-content">
+                            <h4>AI Recommendations:</h4>
+                            <p>Get personalized crop suggestions based on:</p>
+                            <ul>
+                                <li>Your soil type and nutrient levels</li>
+                                <li>Local weather patterns</li>
+                                <li>Regional agricultural data</li>
+                                <li>Market prices and profitability</li>
+                            </ul>
+                            
+                            <h4>Fertilizer Guidance:</h4>
+                            <p>Enter your budget to get fertilizer recommendations tailored to your crops and soil needs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Us Modal -->
+    <div id="contact-us-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-envelope"></i> Contact Us</h2>
+                <span class="close" onclick="closeModal('contact-us-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="contact-info">
+                    <div class="contact-section">
+                        <h3><i class="fas fa-mail-bulk"></i> Get in Touch</h3>
+                        <p>Have questions, suggestions, or need support? We're here to help!</p>
+                        
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div class="contact-text">
+                                    <h4>Email Support</h4>
+                                    <p><a href="mailto:gsani6440@gmail.com">gsani6440@gmail.com</a></p>
+                                    <small>We typically respond within 24 hours</small>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="fas fa-clock"></i>
+                                <div class="contact-text">
+                                    <h4>Response Time</h4>
+                                    <p>24-48 hours</p>
+                                    <small>Monday to Friday, 9 AM - 6 PM IST</small>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="fas fa-headset"></i>
+                                <div class="contact-text">
+                                    <h4>Support Types</h4>
+                                    <p>Technical issues, feature requests, general inquiries</p>
+                                    <small>We're here to help with all your farming needs</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form-section">
+                        <h3><i class="fas fa-paper-plane"></i> Send us a Message</h3>
+                        <form id="contact-form" class="contact-form">
+                            <div class="form-group">
+                                <label for="contact-name">Your Name</label>
+                                <input type="text" id="contact-name" name="name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-email">Your Email</label>
+                                <input type="email" id="contact-email" name="email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-subject">Subject</label>
+                                <select id="contact-subject" name="subject" required>
+                                    <option value="">Select a topic</option>
+                                    <option value="technical-support">Technical Support</option>
+                                    <option value="feature-request">Feature Request</option>
+                                    <option value="bug-report">Bug Report</option>
+                                    <option value="general-inquiry">General Inquiry</option>
+                                    <option value="feedback">Feedback</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-message">Message</label>
+                                <textarea id="contact-message" name="message" rows="5" placeholder="Describe your issue or question in detail..." required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documentation Modal -->
+    <div id="documentation-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-book"></i> Documentation</h2>
+                <span class="close" onclick="closeModal('documentation-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="documentation-content">
+                    <div class="doc-section">
+                        <h3><i class="fas fa-info-circle"></i> About FarmX</h3>
+                        <p>FarmX is a comprehensive smart farming platform designed to help farmers make informed decisions about their crops. Our platform combines location-based soil analysis, weather forecasting, and AI-powered crop recommendations to maximize agricultural productivity.</p>
+                    </div>
+                    
+                    <div class="doc-section">
+                        <h3><i class="fas fa-cogs"></i> Platform Features</h3>
+                        <div class="feature-grid">
+                            <div class="feature-doc">
+                                <h4><i class="fas fa-map-marker-alt"></i> Location Detection</h4>
+                                <p>Accurate GPS-based location detection with manual fallback options covering all Indian states and districts.</p>
+                            </div>
+                            
+                            <div class="feature-doc">
+                                <h4><i class="fas fa-microscope"></i> Soil Analysis</h4>
+                                <p>Comprehensive soil type identification, pH analysis, and nutrient level assessment based on regional data.</p>
+                            </div>
+                            
+                            <div class="feature-doc">
+                                <h4><i class="fas fa-cloud-sun"></i> Weather Integration</h4>
+                                <p>Real-time weather data, 7-day forecasts, and seasonal analysis with farming-specific insights.</p>
+                            </div>
+                            
+                            <div class="feature-doc">
+                                <h4><i class="fas fa-leaf"></i> Crop Recommendations</h4>
+                                <p>AI-powered crop suggestions based on soil conditions, weather patterns, and market data.</p>
+                            </div>
+                            
+                            <div class="feature-doc">
+                                <h4><i class="fas fa-flask"></i> Fertilizer Guidance</h4>
+                                <p>Budget-based fertilizer recommendations with application rates and timing suggestions.</p>
+                            </div>
+                            
+                            <div class="feature-doc">
+                                <h4><i class="fas fa-database"></i> Agricultural Database</h4>
+                                <p>Extensive database of 1000+ agricultural records covering various crops, soil types, and regional conditions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="doc-section">
+                        <h3><i class="fas fa-chart-line"></i> Data Sources</h3>
+                        <ul>
+                            <li><strong>Weather Data:</strong> WeatherAPI for accurate, real-time weather information</li>
+                            <li><strong>Soil Data:</strong> Regional soil databases and agricultural research data</li>
+                            <li><strong>Crop Data:</strong> Agricultural extension services and farming best practices</li>
+                            <li><strong>AI Insights:</strong> Google Gemini AI for intelligent crop recommendations</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="doc-section">
+                        <h3><i class="fas fa-shield-alt"></i> Privacy & Security</h3>
+                        <p>Your location and farming data are processed securely. We don't store personal location information permanently and use data only to provide accurate agricultural recommendations.</p>
+                    </div>
+                    
+                    <div class="doc-section">
+                        <h3><i class="fas fa-mobile-alt"></i> Browser Compatibility</h3>
+                        <p>FarmX works on all modern browsers including Chrome, Firefox, Safari, and Edge. For best experience, ensure JavaScript is enabled and allow location access when prompted.</p>
+                    </div>
+                    
+                    <div class="doc-section">
+                        <h3><i class="fas fa-question-circle"></i> Troubleshooting</h3>
+                        <div class="troubleshooting">
+                            <h4>Location Detection Issues:</h4>
+                            <ul>
+                                <li>Ensure location services are enabled in your browser</li>
+                                <li>Check if you're blocking location access</li>
+                                <li>Use manual location selection as a fallback</li>
+                            </ul>
+                            
+                            <h4>Weather Data Not Loading:</h4>
+                            <ul>
+                                <li>Check your internet connection</li>
+                                <li>Refresh the page and try again</li>
+                                <li>Ensure location is set correctly</li>
+                            </ul>
+                            
+                            <h4>Crop Recommendations Not Showing:</h4>
+                            <ul>
+                                <li>Complete location and soil analysis first</li>
+                                <li>Ensure all required data is filled</li>
+                                <li>Check if weather data is loaded</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay" style="display: none;">

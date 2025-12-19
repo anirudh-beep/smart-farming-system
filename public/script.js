@@ -72,14 +72,24 @@ function setupNavigation() {
         });
     });
     
-    // Hero feature cards navigation
+    // Hero feature cards navigation - enhanced
     document.querySelectorAll('.feature-card').forEach((card, index) => {
         card.addEventListener('click', function() {
             const sections = ['location', 'soil', 'weather', 'crops'];
             if (sections[index]) {
                 scrollToSection(sections[index]);
+                
+                // Add visual feedback
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
             }
         });
+        
+        // Make cards look clickable
+        card.style.cursor = 'pointer';
+        card.style.transition = 'transform 0.2s ease';
     });
     
     // Mobile menu toggle
@@ -1526,3 +1536,107 @@ function getHarvestingGuidance(current, forecast) {
         return "Good harvesting conditions - dry weather expected";
     }
 }
+// Modal Functions
+function showHelpCenter() {
+    document.getElementById('help-center-modal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function showContactUs() {
+    document.getElementById('contact-us-modal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function showDocumentation() {
+    document.getElementById('documentation-modal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    const modals = ['help-center-modal', 'contact-us-modal', 'documentation-modal'];
+    modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (event.target === modal) {
+            closeModal(modalId);
+        }
+    });
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const modals = ['help-center-modal', 'contact-us-modal', 'documentation-modal'];
+        modals.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (modal.style.display === 'block') {
+                closeModal(modalId);
+            }
+        });
+    }
+});
+
+// Contact form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const subject = formData.get('subject');
+            const message = formData.get('message');
+            
+            // Create mailto link
+            const mailtoLink = `mailto:gsani6440@gmail.com?subject=FarmX Support: ${subject}&body=Name: ${name}%0D%0AEmail: ${email}%0D%0A%0D%0AMessage:%0D%0A${encodeURIComponent(message)}`;
+            
+            // Open email client
+            window.location.href = mailtoLink;
+            
+            // Show success message
+            showNotification('Email client opened! Please send the email to complete your request.', 'success');
+            
+            // Reset form
+            this.reset();
+            
+            // Close modal after a delay
+            setTimeout(() => {
+                closeModal('contact-us-modal');
+            }, 2000);
+        });
+    }
+});
+
+// Enhanced feature card navigation
+function updateFeatureCardNavigation() {
+    document.querySelectorAll('.feature-card').forEach((card, index) => {
+        card.addEventListener('click', function() {
+            const sections = ['location', 'soil', 'weather', 'crops'];
+            if (sections[index]) {
+                scrollToSection(sections[index]);
+            }
+        });
+        
+        // Add cursor pointer and hover effect
+        card.style.cursor = 'pointer';
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+}
+
+// Initialize enhanced navigation when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    updateFeatureCardNavigation();
+});
