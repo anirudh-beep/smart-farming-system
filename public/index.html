@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Farming System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-seedling"></i>
+                <span>Smart Farming</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#location" class="nav-link">Location</a></li>
+                <li><a href="#soil" class="nav-link">Soil Analysis</a></li>
+                <li><a href="#weather" class="nav-link">Weather</a></li>
+                <li><a href="#crops" class="nav-link">Crop Recommendations</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Smart Farming System</h1>
+                <p>Location-based data and soil analysis for maximizing crop yield and sustainable farming</p>
+                <button class="cta-button" onclick="scrollToSection('location')">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Get Started
+                </button>
+            </div>
+            <div class="hero-features">
+                <div class="feature-card">
+                    <i class="fas fa-location-arrow"></i>
+                    <h3>Location Detection</h3>
+                    <p>Works even in weak GPS areas with manual selection</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-microscope"></i>
+                    <h3>Soil Analysis</h3>
+                    <p>Comprehensive soil type identification and recommendations</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-cloud-sun"></i>
+                    <h3>Weather Insights</h3>
+                    <p>Real-time weather and seasonal analysis</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-leaf"></i>
+                    <h3>Crop Recommendations</h3>
+                    <p>AI-powered suggestions for optimal crop selection</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Location Section -->
+        <section id="location" class="section">
+            <div class="container">
+                <h2><i class="fas fa-map-marker-alt"></i> Location Detection</h2>
+                
+                <div class="location-methods">
+                    <div class="method-card">
+                        <h3><i class="fas fa-satellite"></i> GPS Detection</h3>
+                        <button id="gps-detect" class="btn btn-primary">
+                            <i class="fas fa-crosshairs"></i>
+                            Detect My Location
+                        </button>
+                        <div id="gps-status" class="status-message"></div>
+                        <button id="test-location" class="btn btn-outline" style="margin-top: 1rem;">
+                            <i class="fas fa-vial"></i>
+                            <span id="test-location-text">Test with Sample Location</span>
+                        </button>
+                    </div>
+                    
+                    <div class="method-card">
+                        <h3><i class="fas fa-edit"></i> Manual Selection</h3>
+                        <form id="manual-location-form">
+                            <select id="country" required>
+                                <option value="">Select Country</option>
+                                <option value="India">India</option>
+                                <option value="USA">USA</option>
+                            </select>
+                            <select id="state" required>
+                                <option value="">Select State</option>
+                            </select>
+                            <select id="district" required>
+                                <option value="">Select District</option>
+                            </select>
+                            <select id="village">
+                                <option value="">Select Village (Optional)</option>
+                            </select>
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fas fa-check"></i>
+                                Set Location
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div id="location-result" class="result-card" style="display: none;">
+                    <h3><i class="fas fa-map-pin"></i> Selected Location</h3>
+                    <div id="location-details"></div>
+                    <button class="btn btn-success" onclick="scrollToSection('soil')">
+                        <i class="fas fa-arrow-right"></i>
+                        Proceed to Soil Analysis
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Soil Analysis Section -->
+        <section id="soil" class="section">
+            <div class="container">
+                <h2><i class="fas fa-microscope"></i> Soil Analysis</h2>
+                
+                <div class="soil-analysis">
+                    <div class="analysis-card auto-detection-card">
+                        <div class="auto-detection-header">
+                            <div class="detection-icon">
+                                <i class="fas fa-search-location"></i>
+                            </div>
+                            <h3>Auto-Detection</h3>
+                        </div>
+                        <div class="detection-content">
+                            <p class="detection-description">Analyzes soil based on your location data</p>
+                            <button id="analyze-soil" class="btn btn-primary detection-btn" disabled>
+                                <i class="fas fa-flask"></i>
+                                Analyze Soil
+                            </button>
+                            <div class="detection-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Automatic soil type identification</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Regional nutrient analysis</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Climate-based recommendations</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card manual-input-card">
+                        <div class="manual-input-header">
+                            <div class="input-icon">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
+                            <h3>Manual Input</h3>
+                        </div>
+                        <form id="soil-input-form" class="manual-form">
+                            <div class="form-group">
+                                <label>Soil Type:</label>
+                                <select id="soil-type" class="auto-detect-select">
+                                    <option value="">Auto-detect</option>
+                                    <option value="Black Cotton Soil">Black Cotton Soil</option>
+                                    <option value="Red Laterite Soil">Red Laterite Soil</option>
+                                    <option value="Alluvial Soil">Alluvial Soil</option>
+                                    <option value="Sandy Soil">Sandy Soil</option>
+                                    <option value="Peaty Soil">Peaty Soil</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>pH Level:</label>
+                                <input type="number" id="soil-ph" step="0.1" min="4" max="10" placeholder="Auto-detect" class="auto-detect-input">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nitrogen:</label>
+                                    <select id="nitrogen" class="auto-detect-select">
+                                        <option value="">Auto-detect</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phosphorus:</label>
+                                    <select id="phosphorus" class="auto-detect-select">
+                                        <option value="">Auto-detect</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Potassium:</label>
+                                    <select id="potassium" class="auto-detect-select">
+                                        <option value="">Auto-detect</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-secondary update-btn">
+                                <i class="fas fa-save"></i>
+                                Update Soil Data
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div id="soil-result" class="result-card" style="display: none;">
+                    <h3><i class="fas fa-chart-bar"></i> Soil Analysis Results</h3>
+                    <div id="soil-details"></div>
+                    <button class="btn btn-success" onclick="scrollToSection('weather')">
+                        <i class="fas fa-arrow-right"></i>
+                        Check Weather Conditions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Weather Section -->
+        <section id="weather" class="section">
+            <div class="container">
+                <h2><i class="fas fa-cloud-sun"></i> Weather Analysis</h2>
+                
+                <div class="weather-controls">
+                    <button id="get-weather" class="btn btn-primary" disabled>
+                        <i class="fas fa-sync"></i>
+                        Get Weather Forecast
+                    </button>
+                    <button id="seasonal-analysis" class="btn btn-secondary" disabled>
+                        <i class="fas fa-calendar-alt"></i>
+                        Seasonal Analysis
+                    </button>
+                </div>
+                
+                <div id="weather-result" class="result-card" style="display: none;">
+                    <div class="weather-grid">
+                        <div class="current-weather">
+                            <h3><i class="fas fa-thermometer-half"></i> Current Conditions</h3>
+                            <div id="current-weather-details"></div>
+                        </div>
+                        <div class="weather-forecast">
+                            <h3><i class="fas fa-calendar-week"></i> 7-Day Forecast</h3>
+                            <div id="forecast-details"></div>
+                        </div>
+                        <div class="weather-analysis">
+                            <h3><i class="fas fa-lightbulb"></i> Farming Insights</h3>
+                            <div id="weather-insights"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-success" onclick="scrollToSection('crops')">
+                        <i class="fas fa-arrow-right"></i>
+                        Get Crop Recommendations
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Crop Recommendations Section -->
+        <section id="crops" class="section">
+            <div class="container">
+                <h2><i class="fas fa-leaf"></i> Crop Recommendations</h2>
+                
+                <div class="crop-controls">
+                    <button id="get-recommendations" class="btn btn-primary" disabled>
+                        <i class="fas fa-magic"></i>
+                        Get AI Recommendations
+                    </button>
+                    <div class="crop-options">
+                        <label>Budget for fertilizers (₹):</label>
+                        <input type="number" id="fertilizer-budget" placeholder="10000" min="0">
+                        <button id="fertilizer-recommendations" class="btn btn-secondary" disabled>
+                            <i class="fas fa-coins"></i>
+                            Fertilizer Options
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Crop Recommendations Block -->
+                <div id="crop-result" class="result-card crop-recommendations-section" style="display: none;">
+                    <h3><i class="fas fa-star"></i> Recommended Crops</h3>
+                    <div id="crop-list" class="crops-grid"></div>
+                </div>
+
+                <!-- Fertilizer Recommendations Block -->
+                <div id="fertilizer-result" class="result-card fertilizer-section" style="display: none;">
+                    <h3><i class="fas fa-flask"></i> Fertilizer Recommendations</h3>
+                    <div id="fertilizer-list"></div>
+                </div>
+
+                <!-- AI Insights Block -->
+                <div id="ai-insights-result" class="result-card ai-insights-section" style="display: none;">
+                    <h3><i class="fas fa-robot"></i> Smart Farming Insights</h3>
+                    <div id="ai-insights-content"></div>
+                </div>
+
+                <!-- Custom Crop Addition -->
+                <div class="custom-crop-section">
+                    <h3><i class="fas fa-plus-circle"></i> Add Custom Crop</h3>
+                    <form id="custom-crop-form">
+                        <div class="form-row">
+                            <input type="text" id="custom-crop-name" placeholder="Crop Name" required>
+                            <input type="number" id="custom-growth-duration" placeholder="Growth Duration (days)" required>
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="custom-soil-types" placeholder="Suitable Soil Types (comma separated)" required>
+                            <input type="text" id="custom-ph-range" placeholder="pH Range (e.g., 6.0-7.5)" required>
+                        </div>
+                        <button type="submit" class="btn btn-outline">
+                            <i class="fas fa-plus"></i>
+                            Add Custom Crop
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-seedling"></i> Smart Farming</h3>
+                    <p>Empowering farmers with technology for sustainable agriculture</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>Location Detection</li>
+                        <li>Soil Analysis</li>
+                        <li>Weather Forecasting</li>
+                        <li>Crop Recommendations</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li>Help Center</li>
+                        <li>Contact Us</li>
+                        <li>Documentation</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Smart Farming System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
