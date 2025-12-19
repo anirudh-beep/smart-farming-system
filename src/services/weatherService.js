@@ -118,6 +118,7 @@ class WeatherService {
 
       return this.analyzeSeasonalPatterns(response.data, cropType);
     } catch (error) {
+      console.log('Weather API historical data not available, using mock seasonal data');
       return this.getMockSeasonalData(location, cropType);
     }
   }
@@ -174,30 +175,120 @@ class WeatherService {
     return tips[cropType] || tips['Rice'];
   }
 
-  determineBestPlantingTime(cropType, monthlyData) {
-    // Logic to determine optimal planting time based on weather patterns
+  determineBestPlantingTime(cropType, seasonalData) {
     const currentMonth = new Date().getMonth();
     const recommendations = [];
+    const currentSeason = seasonalData.currentSeason || 'Unknown';
 
-    // Simplified logic - in real app, this would be more sophisticated
-    if (cropType === 'Rice') {
-      recommendations.push('Best planted during monsoon (June-July)');
-    } else if (cropType === 'Wheat') {
-      recommendations.push('Best planted in winter (November-December)');
-    } else {
-      recommendations.push('Consult local agricultural extension for optimal timing');
+    // Crop-specific planting recommendations
+    const plantingTimes = {
+      'Rice': {
+        kharif: 'June-July (Monsoon season)',
+        rabi: 'November-December (Post-monsoon)',
+        current: currentMonth >= 5 && currentMonth <= 7 ? 'Ideal time for Kharif rice planting' : 'Consider Rabi rice in November-December'
+      },
+      'Wheat': {
+        optimal: 'November-December (Rabi season)',
+        current: currentMonth >= 10 || currentMonth <= 1 ? 'Good time for wheat planting' : 'Wait for winter season (Nov-Dec)'
+      },
+      'Cotton': {
+        optimal: 'April-May (Pre-monsoon)',
+        current: currentMonth >= 3 && currentMonth <= 5 ? 'Suitable time for cotton planting' : 'Plan for next pre-monsoon season'
+      },
+      'Sugarcane': {
+        optimal: 'February-March or October-November',
+        current: currentMonth >= 1 && currentMonth <= 3 ? 'Good time for spring planting' : 'Consider autumn planting (Oct-Nov)'
+      }
+    };
+
+    const cropTiming = plantingTimes[cropType] || {
+      optimal: 'Consult local agricultural extension',
+      current: `Current season: ${currentSeason} - check crop suitability`
+    };
+
+    recommendations.push(cropTiming.optimal);
+    recommendations.push(cropTiming.current);
+    
+    // Add season-specific advice
+    if (currentSeason === 'Monsoon') {
+      recommendations.push('Good for water-intensive crops like rice');
+    } else if (currentSeason === 'Winter') {
+      recommendations.push('Ideal for wheat, mustard, and other rabi crops');
+    } else if (currentSeason === 'Summer') {
+      recommendations.push('Consider drought-resistant crops or ensure irrigation');
     }
 
     return recommendations;
   }
 
-  assessSeasonalRisks(monthlyData) {
+  assessSeasonalRisks(seasonalData) {
+    const currentMonth = new Date().getMonth();
+    const currentSeason = seasonalData.currentSeason || 'Unknown';
+    
+    let droughtRisk = 'Low';
+    let floodRisk = 'Low';
+    let temperatureStress = 'Low';
+    let diseaseRisk = 'Low';
+
+    // Assess risks based on current season
+    if (currentSeason === 'Summer') {
+      droughtRisk = 'High';
+      temperatureStress = 'High';
+      diseaseRisk = 'Low';
+    } else if (currentSeason === 'Monsoon') {
+      droughtRisk = 'Low';
+      floodRisk = 'Medium';
+      temperatureStress = 'Low';
+      diseaseRisk = 'High';
+    } else if (currentSeason === 'Winter') {
+      droughtRisk = 'Medium';
+      floodRisk = 'Low';
+      temperatureStress = 'Medium';
+      diseaseRisk = 'Medium';
+    }
+
     return {
-      droughtRisk: 'Medium - based on historical rainfall patterns',
-      floodRisk: 'Low - adequate drainage systems recommended',
-      temperatureStress: 'Monitor summer months for heat stress',
-      diseaseRisk: 'Higher during humid monsoon period'
+      droughtRisk: `${droughtRisk} - ${this.getDroughtAdvice(droughtRisk)}`,
+      floodRisk: `${floodRisk} - ${this.getFloodAdvice(floodRisk)}`,
+      temperatureStress: `${temperatureStress} - ${this.getTemperatureAdvice(temperatureStress)}`,
+      diseaseRisk: `${diseaseRisk} - ${this.getDiseaseAdvice(diseaseRisk)}`
     };
+  }
+
+  getDroughtAdvice(risk) {
+    const advice = {
+      'Low': 'Normal irrigation schedule sufficient',
+      'Medium': 'Monitor soil moisture, prepare backup irrigation',
+      'High': 'Implement water conservation, consider drought-resistant varieties'
+    };
+    return advice[risk] || 'Monitor weather conditions';
+  }
+
+  getFloodAdvice(risk) {
+    const advice = {
+      'Low': 'Standard drainage practices adequate',
+      'Medium': 'Ensure proper field drainage, avoid low-lying areas',
+      'High': 'Implement flood management, consider raised bed cultivation'
+    };
+    return advice[risk] || 'Maintain good drainage';
+  }
+
+  getTemperatureAdvice(risk) {
+    const advice = {
+      'Low': 'Normal crop management practices',
+      'Medium': 'Monitor for temperature stress, provide shade if needed',
+      'High': 'Use mulching, increase irrigation frequency, provide crop cover'
+    };
+    return advice[risk] || 'Monitor temperature conditions';
+  }
+
+  getDiseaseAdvice(risk) {
+    const advice = {
+      'Low': 'Regular monitoring sufficient',
+      'Medium': 'Increase disease surveillance, ensure good air circulation',
+      'High': 'Implement preventive fungicide sprays, avoid overhead irrigation'
+    };
+    return advice[risk] || 'Monitor for disease symptoms';
   }
 
   async getHistoricalData(location, years) {
@@ -252,13 +343,61 @@ class WeatherService {
   }
 
   getMockSeasonalData(location, cropType) {
+    const currentMonth = new Date().getMonth();
+    const seasonalData = this.getSeasonalDataForRegion(location, currentMonth);
+    
     return {
       success: true,
-      seasonalTrends: 'Mock seasonal data - API integration needed',
-      cropAdvice: this.getCropSpecificAdvice(cropType, {}),
-      bestPlantingTime: this.determineBestPlantingTime(cropType, {}),
-      riskAssessment: this.assessSeasonalRisks({})
+      seasonalTrends: seasonalData.trends,
+      cropAdvice: this.getCropSpecificAdvice(cropType, seasonalData),
+      bestPlantingTime: this.determineBestPlantingTime(cropType, seasonalData),
+      riskAssessment: this.assessSeasonalRisks(seasonalData)
     };
+  }
+
+  getSeasonalDataForRegion(location, currentMonth) {
+    // Seasonal patterns based on Indian agricultural zones
+    const patterns = {
+      'Maharashtra': {
+        monsoon: { start: 5, end: 9, rainfall: 850 },
+        winter: { start: 10, end: 2, temp: 18 },
+        summer: { start: 3, end: 5, temp: 35 }
+      },
+      'Karnataka': {
+        monsoon: { start: 5, end: 9, rainfall: 900 },
+        winter: { start: 10, end: 2, temp: 20 },
+        summer: { start: 3, end: 5, temp: 32 }
+      },
+      'Gujarat': {
+        monsoon: { start: 6, end: 9, rainfall: 650 },
+        winter: { start: 10, end: 2, temp: 15 },
+        summer: { start: 3, end: 5, temp: 38 }
+      },
+      'Uttar Pradesh': {
+        monsoon: { start: 6, end: 9, rainfall: 800 },
+        winter: { start: 10, end: 2, temp: 12 },
+        summer: { start: 3, end: 5, temp: 36 }
+      }
+    };
+
+    const statePattern = patterns[location.state] || patterns['Maharashtra'];
+    
+    return {
+      trends: statePattern,
+      currentSeason: this.getCurrentSeason(currentMonth, statePattern),
+      avgRainfall: statePattern.monsoon.rainfall,
+      avgTemp: 26
+    };
+  }
+
+  getCurrentSeason(month, pattern) {
+    if (month >= pattern.monsoon.start && month <= pattern.monsoon.end) {
+      return 'Monsoon';
+    } else if (month >= pattern.winter.start || month <= pattern.winter.end) {
+      return 'Winter';
+    } else {
+      return 'Summer';
+    }
   }
 
   groupDataByMonth(data) {

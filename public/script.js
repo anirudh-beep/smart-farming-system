@@ -654,36 +654,120 @@ function showWeatherResult(result) {
         </div>
     `).join('');
     
-    // Insights
+    // Enhanced Farming Insights
     const analysis = result.analysis;
+    const totalRainfall = result.forecast.reduce((sum, day) => sum + day.rainfall, 0);
+    const avgTemp = result.forecast.reduce((sum, day) => sum + (day.maxTemp + day.minTemp) / 2, 0) / result.forecast.length;
+    const avgHumidity = result.forecast.reduce((sum, day) => sum + day.humidity, 0) / result.forecast.length;
+    
     weatherInsights.innerHTML = `
         <div class="weather-insights-content">
-            ${analysis.recommendations.length > 0 ? `
-                <div class="recommendations">
-                    <h5><i class="fas fa-lightbulb text-info"></i> Recommendations</h5>
-                    <ul>
-                        ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
-                    </ul>
+            <!-- Weather Summary Cards -->
+            <div class="weather-summary-cards">
+                <div class="summary-card rainfall-card">
+                    <div class="card-icon"><i class="fas fa-cloud-rain"></i></div>
+                    <div class="card-content">
+                        <h6>7-Day Rainfall</h6>
+                        <span class="card-value">${totalRainfall.toFixed(1)}mm</span>
+                        <small class="card-status ${totalRainfall > 50 ? 'status-high' : totalRainfall > 20 ? 'status-medium' : 'status-low'}">
+                            ${totalRainfall > 50 ? 'Heavy' : totalRainfall > 20 ? 'Moderate' : 'Light'}
+                        </small>
+                    </div>
                 </div>
-            ` : ''}
-            
-            ${analysis.warnings.length > 0 ? `
-                <div class="warnings">
-                    <h5><i class="fas fa-exclamation-triangle text-warning"></i> Warnings</h5>
-                    <ul>
-                        ${analysis.warnings.map(warning => `<li>${warning}</li>`).join('')}
-                    </ul>
+                <div class="summary-card temperature-card">
+                    <div class="card-icon"><i class="fas fa-thermometer-half"></i></div>
+                    <div class="card-content">
+                        <h6>Avg Temperature</h6>
+                        <span class="card-value">${avgTemp.toFixed(1)}°C</span>
+                        <small class="card-status ${avgTemp > 30 ? 'status-high' : avgTemp > 20 ? 'status-medium' : 'status-low'}">
+                            ${avgTemp > 30 ? 'Hot' : avgTemp > 20 ? 'Moderate' : 'Cool'}
+                        </small>
+                    </div>
                 </div>
-            ` : ''}
-            
-            ${analysis.opportunities.length > 0 ? `
-                <div class="opportunities">
-                    <h5><i class="fas fa-star text-success"></i> Opportunities</h5>
-                    <ul>
-                        ${analysis.opportunities.map(opp => `<li>${opp}</li>`).join('')}
-                    </ul>
+                <div class="summary-card humidity-card">
+                    <div class="card-icon"><i class="fas fa-tint"></i></div>
+                    <div class="card-content">
+                        <h6>Avg Humidity</h6>
+                        <span class="card-value">${avgHumidity.toFixed(0)}%</span>
+                        <small class="card-status ${avgHumidity > 70 ? 'status-high' : avgHumidity > 50 ? 'status-medium' : 'status-low'}">
+                            ${avgHumidity > 70 ? 'High' : avgHumidity > 50 ? 'Moderate' : 'Low'}
+                        </small>
+                    </div>
                 </div>
-            ` : ''}
+            </div>
+
+            <!-- Detailed Farming Insights -->
+            <div class="farming-insights-detailed">
+                ${analysis.recommendations.length > 0 ? `
+                    <div class="insight-section recommendations">
+                        <h5><i class="fas fa-lightbulb text-info"></i> Farming Recommendations</h5>
+                        <div class="insight-grid">
+                            ${analysis.recommendations.map(rec => `
+                                <div class="insight-item">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <span>${rec}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${analysis.warnings.length > 0 ? `
+                    <div class="insight-section warnings">
+                        <h5><i class="fas fa-exclamation-triangle text-warning"></i> Weather Alerts</h5>
+                        <div class="insight-grid">
+                            ${analysis.warnings.map(warning => `
+                                <div class="insight-item warning-item">
+                                    <i class="fas fa-exclamation-circle text-warning"></i>
+                                    <span>${warning}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${analysis.opportunities.length > 0 ? `
+                    <div class="insight-section opportunities">
+                        <h5><i class="fas fa-star text-success"></i> Farming Opportunities</h5>
+                        <div class="insight-grid">
+                            ${analysis.opportunities.map(opp => `
+                                <div class="insight-item opportunity-item">
+                                    <i class="fas fa-seedling text-success"></i>
+                                    <span>${opp}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Additional Farming Guidance -->
+                <div class="insight-section farming-guidance">
+                    <h5><i class="fas fa-tractor"></i> Field Operations Guidance</h5>
+                    <div class="guidance-grid">
+                        <div class="guidance-item">
+                            <i class="fas fa-seedling"></i>
+                            <div class="guidance-content">
+                                <h6>Planting Conditions</h6>
+                                <p>${this.getPlantingGuidance(result.current, totalRainfall)}</p>
+                            </div>
+                        </div>
+                        <div class="guidance-item">
+                            <i class="fas fa-spray-can"></i>
+                            <div class="guidance-content">
+                                <h6>Spraying Conditions</h6>
+                                <p>${this.getSprayingGuidance(result.current)}</p>
+                            </div>
+                        </div>
+                        <div class="guidance-item">
+                            <i class="fas fa-cut"></i>
+                            <div class="guidance-content">
+                                <h6>Harvesting Conditions</h6>
+                                <p>${this.getHarvestingGuidance(result.current, result.forecast)}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
     
@@ -708,29 +792,120 @@ function showWeatherResult(result) {
 }
 
 function showSeasonalAnalysis(result) {
-    // Add seasonal analysis to weather insights
-    const weatherInsights = document.getElementById('weather-insights');
-    const seasonalContent = `
-        <div class="seasonal-analysis">
-            <h5><i class="fas fa-calendar-alt"></i> Seasonal Analysis</h5>
-            <div class="seasonal-info">
-                <p><strong>Best Planting Time:</strong></p>
-                <ul>
-                    ${result.bestPlantingTime.map(time => `<li>${time}</li>`).join('')}
-                </ul>
-                
-                <p><strong>Risk Assessment:</strong></p>
-                <ul>
-                    <li>Drought Risk: ${result.riskAssessment.droughtRisk}</li>
-                    <li>Flood Risk: ${result.riskAssessment.floodRisk}</li>
-                    <li>Temperature Stress: ${result.riskAssessment.temperatureStress}</li>
-                    <li>Disease Risk: ${result.riskAssessment.diseaseRisk}</li>
-                </ul>
+    // Show seasonal analysis in separate section
+    const seasonalResult = document.getElementById('seasonal-result');
+    const plantingSchedule = document.getElementById('planting-schedule-details');
+    const riskAssessment = document.getElementById('risk-assessment-details');
+    const cropCalendar = document.getElementById('crop-calendar-details');
+    const seasonalTips = document.getElementById('seasonal-tips-details');
+    
+    // Planting Schedule
+    plantingSchedule.innerHTML = `
+        <div class="planting-info">
+            <div class="planting-times">
+                ${result.bestPlantingTime.map(time => `
+                    <div class="planting-item">
+                        <i class="fas fa-check-circle text-success"></i>
+                        <span>${time}</span>
+                    </div>
+                `).join('')}
+            </div>
+            ${result.cropAdvice ? `
+                <div class="crop-requirements">
+                    <h5>Crop Requirements</h5>
+                    <div class="requirement-item">
+                        <i class="fas fa-tint"></i>
+                        <span><strong>Water Needs:</strong> ${result.cropAdvice.waterNeeds}</span>
+                    </div>
+                    <div class="requirement-item">
+                        <i class="fas fa-thermometer-half"></i>
+                        <span><strong>Temperature Range:</strong> ${result.cropAdvice.temperatureRange}</span>
+                    </div>
+                </div>
+            ` : ''}
+        </div>
+    `;
+    
+    // Risk Assessment
+    riskAssessment.innerHTML = `
+        <div class="risk-grid">
+            <div class="risk-item risk-drought">
+                <div class="risk-icon"><i class="fas fa-sun"></i></div>
+                <div class="risk-details">
+                    <h5>Drought Risk</h5>
+                    <p>${result.riskAssessment.droughtRisk}</p>
+                </div>
+            </div>
+            <div class="risk-item risk-flood">
+                <div class="risk-icon"><i class="fas fa-water"></i></div>
+                <div class="risk-details">
+                    <h5>Flood Risk</h5>
+                    <p>${result.riskAssessment.floodRisk}</p>
+                </div>
+            </div>
+            <div class="risk-item risk-temperature">
+                <div class="risk-icon"><i class="fas fa-temperature-high"></i></div>
+                <div class="risk-details">
+                    <h5>Temperature Stress</h5>
+                    <p>${result.riskAssessment.temperatureStress}</p>
+                </div>
+            </div>
+            <div class="risk-item risk-disease">
+                <div class="risk-icon"><i class="fas fa-virus"></i></div>
+                <div class="risk-details">
+                    <h5>Disease Risk</h5>
+                    <p>${result.riskAssessment.diseaseRisk}</p>
+                </div>
             </div>
         </div>
     `;
     
-    weatherInsights.innerHTML += seasonalContent;
+    // Agricultural Calendar
+    const currentMonth = new Date().getMonth();
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    cropCalendar.innerHTML = `
+        <div class="calendar-info">
+            <p class="current-month"><i class="fas fa-calendar-day"></i> Current Month: <strong>${months[currentMonth]}</strong></p>
+            <div class="season-timeline">
+                <div class="season-block monsoon">
+                    <h6>Monsoon Season</h6>
+                    <p>June - September</p>
+                    <small>Kharif crops: Rice, Cotton, Maize</small>
+                </div>
+                <div class="season-block winter">
+                    <h6>Winter Season</h6>
+                    <p>October - February</p>
+                    <small>Rabi crops: Wheat, Mustard, Barley</small>
+                </div>
+                <div class="season-block summer">
+                    <h6>Summer Season</h6>
+                    <p>March - May</p>
+                    <small>Zaid crops: Watermelon, Cucumber, Vegetables</small>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Seasonal Tips
+    seasonalTips.innerHTML = `
+        <div class="tips-list">
+            ${result.cropAdvice && result.cropAdvice.seasonalTips ? 
+                result.cropAdvice.seasonalTips.map(tip => `
+                    <div class="tip-item">
+                        <i class="fas fa-lightbulb text-warning"></i>
+                        <span>${tip}</span>
+                    </div>
+                `).join('') 
+                : '<p>Complete weather analysis to get seasonal tips</p>'
+            }
+        </div>
+    `;
+    
+    seasonalResult.style.display = 'block';
+    showNotification('Seasonal analysis completed!', 'success');
+    
+    // Scroll to seasonal results
+    seasonalResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // Crop Recommendation Functions
@@ -1312,3 +1487,42 @@ cropSelectionStyle.textContent = `
     }
 `;
 document.head.appendChild(cropSelectionStyle);
+
+// Helper functions for farming guidance
+function getPlantingGuidance(current, totalRainfall) {
+    if (current.windSpeed > 20) {
+        return "High winds - postpone planting until conditions calm down";
+    } else if (totalRainfall > 50) {
+        return "Excellent soil moisture for planting - ideal conditions";
+    } else if (totalRainfall < 10) {
+        return "Low rainfall expected - ensure irrigation before planting";
+    } else {
+        return "Good planting conditions - moderate weather expected";
+    }
+}
+
+function getSprayingGuidance(current) {
+    if (current.windSpeed > 15) {
+        return "High winds - avoid spraying to prevent drift";
+    } else if (current.humidity > 80) {
+        return "High humidity - good for fungicide application";
+    } else if (current.temperature > 35) {
+        return "High temperature - spray early morning or evening";
+    } else {
+        return "Good spraying conditions - low wind and moderate temperature";
+    }
+}
+
+function getHarvestingGuidance(current, forecast) {
+    const rainInNext3Days = forecast.slice(0, 3).reduce((sum, day) => sum + day.rainfall, 0);
+    
+    if (rainInNext3Days > 20) {
+        return "Heavy rain expected - harvest immediately if crops are ready";
+    } else if (current.humidity > 85) {
+        return "High humidity - ensure proper drying after harvest";
+    } else if (current.windSpeed > 25) {
+        return "Strong winds - delay harvesting to prevent crop damage";
+    } else {
+        return "Good harvesting conditions - dry weather expected";
+    }
+}
