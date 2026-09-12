@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: farmx
+    runtime: node
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: WEATHER_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
